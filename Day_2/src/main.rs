@@ -11,19 +11,21 @@ fn main() {
     
     for i in 0..values.len() {
 
-        if check_lines_part_one(&values[i]) == true {
+        if check_lines(&values[i]) == true {
             answer_part_one += 1
         } 
-        if check_lines_part_two(values[i].clone()) == true {
+        else if fail_dampener(&values[i]) == true {
             answer_part_two += 1
         }
     }
+
+    answer_part_two = answer_part_one + answer_part_two;
 
     println!("Answer for part one is: {}", answer_part_one);
     println!("Answer for part two is: {}", answer_part_two);
 }
 
-fn check_lines_part_one (line: &Vec<i32>) -> bool {
+fn check_lines (line: &Vec<i32>) -> bool {
 
     let direction = line[1] - line[0];
     if direction == 0 || direction.abs() > 3 {
@@ -44,32 +46,17 @@ fn check_lines_part_one (line: &Vec<i32>) -> bool {
     true
 }
 
-fn check_lines_part_two (mut line: Vec<i32>) -> bool {
+fn fail_dampener (line: &Vec<i32>) -> bool {
 
-    let mut fail_dampener_used:bool = false;
-    let direction = line[1] - line[0];
-    if direction == 0 || direction.abs() > 3 {
-        fail_dampener_used = true;
+for i in 0..line.len() {
+    let mut modified_line = line.clone();
+    modified_line.remove(i);
+
+    if check_lines(&modified_line) == true {
+        return true
     }
-
-    let is_increasing = direction > 0;
-
-
-    for i in 1..line.len() {
-
-        let diff = line[i] - line[i - 1];
-
-        if diff.abs() < 1 || diff.abs() > 3 || (is_increasing && diff < 0) || (!is_increasing && diff > 0) {
-            if fail_dampener_used == true {
-                return false
-            }
-            fail_dampener_used = true;
-            line.remove(i);
-            
-        }
-    }
-
-    true
+}
+return false
 }
 
 fn prepare_input(input: String) -> Vec<Vec<i32>> {
